@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Field Agent</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+            <p></p>
+        </div>
+        <div class="row">
+            <div class="col-md-10">
+                <h2>Field Agent</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 m-1 text-left" 
+                th:if="${!errors.isEmpty()}">
+                <p class="alert alert-danger" th:each="error : ${errors}" 
+                th:text="${error.message}">Error message</p>
+            </div>
+        </div>
+        <form action="editAgent" method="POST">
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="firstName">First Name</label>
+                    <input type="text" name="firstName" class="form-control" 
+                           th:value="${agent.firstName}"/>
+                </div>
+                <div class="col-md-4">
+                    <label for="middleName">Middle Name</label>
+                        <input type="text" name="middleName" class="form-control" 
+                        th:value="${agent.middleName}"/>
+                </div>
+                <div class="col-md-4">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" name="lastName" class="form-control" 
+                    th:value="${agent.lastName}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label for="birthDate">Birth Date</label>
+                        <input type="date" name="birthDate" class="form-control" 
+                        th:value="${agent.birthDate}"/>
+                </div>
+                <div class="col-md-6">
+                    <label for="height">Height</label>
+                        <input type="number" name="height" class="form-control" 
+                        th:value="${agent.height}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-10">
+                    <h3>Agency</h3>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4" style="display: none">
+                    <label for="identifier"> Original Identifier</label>
+                        <input type="text" name="oldIdentifier" class="form-control" 
+                        th:value="${agent.identifier}" readonly/>
+                </div>
+                <div class="col-md-4">
+                    <label for="identifier">Identifier</label>
+                        <input type="text" name="newIdentifier" class="form-control" 
+                        th:value="${agent.identifier}"/>
+                </div>
+                <div class="col-md-4">
+                    <label for="agency">Agency</label>
+                        <select name="agencyId" class="form-control" >
+                            <option th:each="agency : ${agencies}" 
+                             th:value="${agency.agencyId}" 
+                             th:text="${agency.name}"
+                             th:selected="${agency.name == agent.agency.name}">
+                             - Select -</option>
+                         </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="clearance">Security Clearance</label>
+                        <select name="clearanceId" class="form-control" >
+                            <option th:each="clearance : ${clearances}" 
+                                 th:value="${clearance.securityClearanceId}" 
+                                 th:text="${clearance.name}"
+                                 th:selected="${clearance.name == agent.securityClearance.name}">
+                                 - Select -</option>
+                        </select>
+                </div>
+            </div>   
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label for="activationDate">Activation Date</label>
+                    <input type="date" name="activationDate" class="form-control" 
+                        th:value="${agent.activationDate}"/>
+                </div>
+                <div class="col-md-3">
+                    <label for="isActive">Is Active</label>
+                    <input type="checkbox" name="isActive"
+                           th:checked="${isActive}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <img th:src="${agent.pictureUrl}" />
+            </div>
+            <div class="form-group">
+                <label for="pictureUrl">Picture Url</label>
+                <input type="url" class="form-control" id="pictureUrl" name="pictureUrl" th:value="${agent.pictureUrl}">
+            </div>
+            <div class="form-group-row">
+                <p></p>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a th:href="@{/clearEditAgentErrors}" class="btn btn-info">Cancel</a>
+        </form>
+        <hr>
+        <div class="row">
+            <div class="col-md-10">
+                <h2>Assignments</h2>
+            </div>
+            <div class="col-md-2">
+                <a th:href="@{/addAssignment(id=${agent.identifier})}" class="btn btn-primary">Add An Assignment</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-left">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    
+                    
+                    <tbody>
+                        <tr th:each="assignment : ${assignments}">
+                           <!-- ${#lists.toList(assignment)}
+                            ${#lists.sort(list, assignment.startDate)} -->
+                            <td th:text="${assignment.country.name}">Country</td>
+                            <td th:text="${#temporals.format(assignment.startDate, 'MM/dd/yyyy')}">Start</td>
+                            <td th:text="${#temporals.format(assignment.projectedEndDate, 'MM/dd/yyyy')}">End</td>
+                            <td><a href="#" th:href="@{/deleteAssignmentPage(id=${assignment.assignmentId})}" class="btn btn-danger">Delete</a></td>
+                            <td><a href="#" th:href="@{/editAssignment(id=${assignment.assignmentId})}" class="btn btn-info">View/Edit</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- End main body -->
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Field Agent</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+            <p></p>
+        </div>
+        <form action="editAssignment" method="post">
+            <div class="row">
+                <div class="col-md-2">
+                    <h2>Assignment</h2>
+                </div>
+                <div class="col-md-1">
+                    <input type="text" name="assignmentId" class="form-control" 
+                        th:value="${assignment.assignmentId}" hidden>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 m-1 text-left" 
+                    th:if="${!errors.isEmpty()}">
+                    <p class="alert alert-danger" th:each="error : ${errors}" 
+                    th:text="${error.message}">Error message</p>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <label for="agent">Field Agent</label>
+                    <select name="agentId" class="form-control" >
+                            <option th:each="agent : ${agents}" 
+                                 th:value="${agent.identifier}" 
+                                 th:text="${agent.firstName + ' ' + agent.lastName}"
+                                 th:selected="${agent.firstName == foundAgent.firstName && agent.lastName == foundAgent.lastName}">
+                                 Field Agent</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="country">Country</label>
+                    <select name="countryId" class="form-control" >
+                            <option th:each="country : ${countries}" 
+                                 th:value="${country.countryCode}" 
+                                 th:text="${country.name}"
+                                 th:selected="${country.name == assignment.country.name}">
+                                 Country</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label for="startDate">Start</label>
+                        <input type="date" name="startDate" class="form-control" 
+                        th:value="${assignment.startDate}" />
+                </div>
+                <div class="col-md-4">
+                    <label for="projectedEndDate">Projected End</label>
+                        <input type="date" name="projectedEndDate" class="form-control" 
+                        th:value="${assignment.projectedEndDate}" />
+                </div>
+                <div class="col-md-4">
+                    <label for="actualEndDate">Actual End</label>
+                        <input type="date" name="actualEndDate" class="form-control" 
+                        th:value="${assignment.actualEndDate}" />
+                </div>
+            </div>   
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <label for="notes">Notes</label>
+                    <textarea rows="8" name="notes" class="form-control" 
+                              th:text="${assignment.notes}"/></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+            </div>
+            <div class="form-grou-row">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a th:href="@{/clearEditAssignmentErrors(id=${assignment.assignmentId})}" class="btn btn-info">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <!-- End main body -->
+    
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  </body>
+</html>
